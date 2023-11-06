@@ -16,7 +16,7 @@
 //if exist check if have write permision if not, exit
 //if file does not exist create it and set variable craate to 1;
 //return file descriptor to outputfile
-int	file_handler(char *output_file, int *is_created)
+int	file_handler(char *output_file)
 {
 	int	access_value;
 	int	return_fd;
@@ -34,7 +34,6 @@ int	file_handler(char *output_file, int *is_created)
 		return (return_fd);
 	}
 	return_fd = open(output_file, O_WRONLY | O_CREAT, 0777);
-	*is_created = 1;
 	return (return_fd);
 }
 
@@ -54,10 +53,8 @@ void	action_2(char *output_file, char *cmd2, char **envp, int *pipe_fd)
 {
 	int		output_fd;
 	char	*cmd2_path;
-	int		is_created;
 
-	is_created = 0;
-	output_fd = file_handler(output_file, &is_created);
+	output_fd = file_handler(output_file);
 	if (output_fd == -1)
 		error_handler(4);
 	cmd2_path = get_cmd_path(cmd2, get_all_paths(envp));
@@ -68,8 +65,6 @@ void	action_2(char *output_file, char *cmd2, char **envp, int *pipe_fd)
 	close(pipe_fd[1]);
 	if (cmd2_path != NULL)
 		command_executer(cmd2_path, cmd2, envp);
-	if (is_created == 1)
-		unlink(output_file);
 	free(cmd2_path);
 	error_handler(6);
 	exit(1);
