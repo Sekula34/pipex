@@ -54,7 +54,8 @@ void	action_2(char *output_file, char *cmd2, char **envp, int *pipe_fd)
 		if (cmd2_args != NULL)
 			execve(cmd2_path, cmd2_args, envp);
 		free_arr(cmd2_args);
-		free(cmd2_path);
 	}
+	free(cmd2_path);
+	error_handler(6);
 	exit(1);
 }

@@ -58,7 +58,8 @@ void	action_1(char *input_file, char *cmd1, char **envp, int *pipe_fd)
 		if (cmd_args != NULL)
 			execve(cmd, cmd_args, envp);
 		free_arr(cmd_args);
-		free(cmd);
 	}
+	free(cmd);
+	error_handler(6);
 	exit(0);
 }

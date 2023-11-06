@@ -62,6 +62,7 @@ void	free_arr(char **arr)
 //3 fork failed
 //4 open failed
 //5 dup2 failed
+//6 command not found
 void	error_handler(int error_num)
 {
 	if (error_num == 1)
@@ -74,5 +75,7 @@ void	error_handler(int error_num)
 		ft_putstr_fd("Open failed\n", 2);
 	if (error_num == 5)
 		ft_putstr_fd("Dup2 failed\n", 2);
+	if (error_num == 6)
+		ft_putstr_fd("Command not found\n", 2);
 	exit (1);
 }
