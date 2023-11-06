@@ -54,7 +54,6 @@ void	action_2(char *output_file, char *cmd2, char **envp, int *pipe_fd)
 {
 	int		output_fd;
 	char	*cmd2_path;
-	char	**cmd2_args;
 	int		is_created;
 
 	is_created = 0;
