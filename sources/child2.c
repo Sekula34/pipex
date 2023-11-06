@@ -12,7 +12,11 @@
 
 #include "../headers/pipex.h"
 
-int	file_handler(char *output_file)
+//check if file exist 
+//if exist check if have write permision if not, exit
+//if file does not exist create it and set variable craate to 1;
+//return file descriptor to outputfile
+int	file_handler(char *output_file, int *is_created)
 {
 	int	access_value;
 	int	return_fd;
@@ -30,7 +34,20 @@ int	file_handler(char *output_file)
 		return (return_fd);
 	}
 	return_fd = open(output_file, O_WRONLY | O_CREAT, 0777);
+	*is_created = 1;
 	return (return_fd);
+}
+
+//execute command located at cmd2_path, with cmd2 arguments and envp
+//if execve fails free splited cmd2_args
+void	command_executer(char *cmd2_path, char *cmd2, char **envp)
+{
+	char	**cmd2_args;
+
+	cmd2_args = ft_split(cmd2, ' ');
+	if (cmd2_args != NULL)
+		execve(cmd2_path, cmd2_args, envp);
+	free_arr(cmd2_args);
 }
 
 void	action_2(char *output_file, char *cmd2, char **envp, int *pipe_fd)
@@ -38,8 +55,10 @@ void	action_2(char *output_file, char *cmd2, char **envp, int *pipe_fd)
 	int		output_fd;
 	char	*cmd2_path;
 	char	**cmd2_args;
+	int		is_created;
 
-	output_fd = file_handler(output_file);
+	is_created = 0;
+	output_fd = file_handler(output_file, &is_created);
 	if (output_fd == -1)
 		error_handler(4);
 	cmd2_path = get_cmd_path(cmd2, get_all_paths(envp));
@@ -49,12 +68,9 @@ void	action_2(char *output_file, char *cmd2, char **envp, int *pipe_fd)
 		error_handler(5);
 	close(pipe_fd[1]);
 	if (cmd2_path != NULL)
-	{
-		cmd2_args = ft_split(cmd2, ' ');
-		if (cmd2_args != NULL)
-			execve(cmd2_path, cmd2_args, envp);
-		free_arr(cmd2_args);
-	}
+		command_executer(cmd2_path, cmd2, envp);
+	if (is_created == 1)
+		unlink(output_file);
 	free(cmd2_path);
 	error_handler(6);
 	exit(1);
