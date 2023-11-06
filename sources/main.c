@@ -14,9 +14,10 @@
 
 //wait for child and close read if read write is 0, 
 //close write is read write is 1
-void	parent_action( int read_write, int *pipe_fd)
+void	parent_action(int *pipe_fd)
 {
-	close(pipe_fd[read_write]);
+	close(pipe_fd[0]);
+	wait(NULL);
 	wait(NULL);
 }
 
@@ -38,17 +39,12 @@ int	main(int argc, char *argv[], char **envp)
 	else
 	{
 		close(pipe_fd[1]);
-		//parent_action(1, pipe_fd);
 		pid2 = fork();
 		if (pid2 < 0)
 			error_handler(3);
 		if (pid2 == 0)
 			action_2(argv[4], argv[3], envp, pipe_fd);
-		parent_action(0, pipe_fd);
-		close(pipe_fd[0]);
-		wait(NULL);
-		wait(NULL);
-
+		parent_action(pipe_fd);
 	}
 	return (0);
 }
